@@ -1,6 +1,6 @@
 module.exports = {
   Query: {
-    launches: (_, __, { dataSources }) =>
+    launches: (_, __, { dataSources }) => 
       dataSources.launchAPI.getAllLaunches(),
     launch: (_, { id }, { dataSources }) =>
       dataSources.launchAPI.getLaunchById({ launchId: id }),
@@ -8,6 +8,7 @@ module.exports = {
   },
   Mutation: {
     login: async (_, { email }, { dataSources }) => {
+      // console.log('datasources: ', dataSources);
       const user = await dataSources.userAPI.findOrCreateUser({ email });
       if (user) {
         user.token = Buffer.from(email).toString('base64');
@@ -15,6 +16,7 @@ module.exports = {
       }
     },
     bookTrips: async (_, { launchIds }, { dataSources }) => {
+      // console.log('datasources: ', dataSources);
       const results = await dataSources.userAPI.bookTrips({ launchIds });
       const launches = await dataSources.launchAPI.getLaunchesByIds({
         launchIds,
@@ -49,3 +51,22 @@ module.exports = {
     },
   },
 };
+
+/* sample mutation:
+
+mutation LoginUser {
+  login(email: "daisy@apollographql.com") {
+    token
+  }
+}
+
+mutation BookTrips {
+  bookTrips(launchIds: [67, 68, 69]) {
+    success
+    message
+    launches {
+      id
+    }
+  }
+}
+*/
